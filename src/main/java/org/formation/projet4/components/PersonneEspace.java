@@ -1,16 +1,15 @@
 package org.formation.projet4.components;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-@Component("P")
+@Component("PE")
+@Primary
 @Data
-public class Personne implements IPersonne {
+public class PersonneEspace implements IPersonne {
 
     private Integer id;
     private String name;
@@ -18,7 +17,7 @@ public class Personne implements IPersonne {
 
     private Adresse adresse;
 
-    public Personne(
+    public PersonneEspace(
             @Value("1") Integer id,
             @Value("John") String name,
             @Value("25") Integer age,
@@ -32,12 +31,12 @@ public class Personne implements IPersonne {
 
     @Override
     public void parler() {
-        System.out.println("blabla");
+        System.out.println("blublu");
     }
 
     @Override
     public void marcher() {
-        System.out.println("Je marche");
+        System.out.println("Je vole");
     }
 
 }
