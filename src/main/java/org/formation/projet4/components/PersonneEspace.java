@@ -1,6 +1,7 @@
 package org.formation.projet4.components;
 
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Scope;
@@ -21,7 +22,7 @@ public class PersonneEspace implements IPersonne {
             @Value("1") Integer id,
             @Value("John") String name,
             @Value("25") Integer age,
-            Adresse adresse) {
+            @Qualifier("addresse1FromConfig") Adresse adresse) {
 
         this.id = id;
         this.name = name;

@@ -7,15 +7,19 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("adresse1")
 @Scope("singleton")
 //@Scope("prototype")
 @Data
 public class Adresse {
 
+    @Value("${adresse.numero}")
     private Integer numero;
+    @Value("${adresse.rue}")
     private String libelleRue;
+    @Value("${adresse.cp}")
     private String codePostal;
+    @Value("${adresse.ville}")
     private String ville;
 
     public Adresse(
