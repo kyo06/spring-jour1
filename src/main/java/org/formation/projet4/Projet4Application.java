@@ -3,6 +3,7 @@ package org.formation.projet4;
 import org.formation.projet4.components.Adresse;
 import org.formation.projet4.components.IPersonne;
 import org.formation.projet4.components.Personne;
+import org.formation.projet4.services.UserService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -27,6 +28,11 @@ public class Projet4Application {
         beans.forEach((nom, adresse) ->
                 System.out.println(nom + " -> " + adresse));
 
+        UserService userService = context.getBean(UserService.class);
+        String resultat = userService.getUserById(1);
+        System.out.println("FINAL RESULT " + resultat);
+
+        /*
         ApplicationContext contextCLassPath =
                 new ClassPathXmlApplicationContext("classpath:spring/mon-contexte.xml");
 
@@ -34,7 +40,7 @@ public class Projet4Application {
         Personne personne2 = contextCLassPath.getBean("personne2", Personne.class);
         System.out.println(personne1);
         System.out.println(personne2);
-
+        */
     }
 
 }
