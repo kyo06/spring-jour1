@@ -6,7 +6,7 @@ import java.util.*;
 
 public class ClientInMemoryDao {
 
-    public final List<ClientDto> clients = Collections.synchronizedList(new ArrayList<>(
+    public static final List<ClientDto> clients = Collections.synchronizedList(new ArrayList<>(
             Arrays.asList(
                     ClientDto.builder()
                             .id(1)
