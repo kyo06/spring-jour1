@@ -3,6 +3,7 @@ package org.formation.projet4.controllers;
 import jakarta.validation.Valid;
 import org.formation.projet4.dao.ClientInMemoryDao;
 import org.formation.projet4.dao.FactureInMemoryDao;
+import org.formation.projet4.exceptions.ClientNotFoundException;
 import org.formation.projet4.models.ClientDto;
 import org.formation.projet4.models.FactureDto;
 import org.springframework.http.ResponseEntity;
@@ -46,7 +47,7 @@ public class ClientController {
     @PostMapping("/{id}")
     public ResponseEntity<ClientDto> updateClient(
             @PathVariable Integer id,
-            @RequestBody @Valid ClientDto clientDto) {
+            @RequestBody @Valid ClientDto clientDto) throws ClientNotFoundException {
 
         clientDto.setId(id);
 
@@ -54,7 +55,8 @@ public class ClientController {
                 .filter(c -> c.getId().equals(id)).findFirst().orElse(null);
 
         if(clientDtoForUpdate == null) {
-            ResponseEntity.notFound().build();
+            throw new ClientNotFoundException("idClient : " + id);
+            //return ResponseEntity.notFound().build();
         }
 
         clientDtoForUpdate.setAddress(clientDto.getAddress());
@@ -89,7 +91,7 @@ public class ClientController {
     }
 
     // GET /clients/{id}/factures/{idFacture} -> récupérer la factures de l'idFacture du client id
-    @GetMapping("/{id}/factures")
+    @GetMapping("/{id}/factures/{idFacture}")
     public ResponseEntity<FactureDto> geFactureByIDclientAndByIdFacture(
             @PathVariable Integer id,
             @PathVariable Integer idFacture

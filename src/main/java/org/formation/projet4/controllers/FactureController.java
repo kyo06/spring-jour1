@@ -50,7 +50,7 @@ public class FactureController {
                 .filter(c -> c.getId().equals(id)).findFirst().orElse(null);
 
         if(factureDtoForUpdate == null) {
-            ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();
         }
 
         factureDtoForUpdate.setLibelle(factureDto.getLibelle());
