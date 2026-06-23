@@ -44,7 +44,7 @@ public class ClientController {
     }
 
     // PUT /clients/{id} -> Mettre à jour un client
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<ClientDto> updateClient(
             @PathVariable Integer id,
             @RequestBody @Valid ClientDto clientDto) throws ClientNotFoundException {

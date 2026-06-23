@@ -39,7 +39,7 @@ public class FactureController {
     }
 
     // PUT /factures/{id} -> Mettre à jour un facture
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<FactureDto> updateFacture(
             @PathVariable Integer id,
             @RequestBody @Valid FactureDto factureDto) {
