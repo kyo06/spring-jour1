@@ -3,6 +3,9 @@ package org.formation.projet4.services;
 import lombok.AllArgsConstructor;
 import org.formation.projet4.dao.ClientJPADao;
 import org.formation.projet4.models.ClientDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,8 +16,12 @@ public class ClientService {
 
     private final ClientJPADao clientJPADao;
 
-    public List<ClientDto> getAllClients() {
-        return (List<ClientDto>) clientJPADao.findAll();
+    public Page<ClientDto> getAllClients(String name, String email) {
+        if(name != null) {
+            return clientJPADao.findByNameLike(name, PageRequest.of(0, 10));
+        }
+
+        return clientJPADao.findAllClients(PageRequest.of(0, 10));
     }
 
     public ClientDto findClientById(Integer id) {

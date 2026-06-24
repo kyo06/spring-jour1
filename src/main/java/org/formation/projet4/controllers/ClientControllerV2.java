@@ -8,6 +8,7 @@ import org.formation.projet4.models.ClientDto;
 import org.formation.projet4.models.FactureDto;
 import org.formation.projet4.services.ClientService;
 import org.formation.projet4.services.FactureService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,10 +27,10 @@ public class ClientControllerV2 {
     // GET /clients?name=dupont -> récupérer tous les clients
 
     @GetMapping("")
-    public ResponseEntity<List<ClientDto>> getAllClients(
+    public ResponseEntity<Page<ClientDto>> getAllClients(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String email) {
-        return ResponseEntity.ok(clientService.getAllClients());
+        return ResponseEntity.ok(clientService.getAllClients(name, email));
     }
 
 
