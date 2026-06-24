@@ -2,13 +2,12 @@ package org.formation.projet4.controllers;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.formation.projet4.dao.ClientInMemoryDao;
 import org.formation.projet4.dao.FactureInMemoryDao;
 import org.formation.projet4.exceptions.ClientNotFoundException;
 import org.formation.projet4.models.ClientDto;
 import org.formation.projet4.models.FactureDto;
 import org.formation.projet4.services.ClientService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.formation.projet4.services.FactureService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +20,7 @@ import java.util.stream.Collectors;
 public class ClientControllerV2 {
 
     private final ClientService clientService;
+    private final FactureService factureService;
 
     // GET /clients -> récupérer tous les clients
     // GET /clients?name=dupont -> récupérer tous les clients
@@ -37,20 +37,17 @@ public class ClientControllerV2 {
     // GET /clients/{id} -> récupérer le client id
     @GetMapping("/{id}")
     public ResponseEntity<ClientDto> getClientById(@PathVariable Integer id) {
-        return ClientInMemoryDao.clients.stream()
-                .filter(c -> c.getId().equals(id))
-                .map(ResponseEntity::ok)
-                .findFirst().orElse(ResponseEntity.notFound().build());
+        ClientDto clientDto = clientService.findClientById(id);
+        if(clientDto == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(clientDto);
     }
 
     // POST /clients -> Créer un client
     @PostMapping("")
     public ResponseEntity<ClientDto> createClient(@RequestBody @Valid ClientDto clientDto) {
-
-        clientDto.setId(ClientInMemoryDao.clients.size() + 1);
-        ClientInMemoryDao.clients.add(clientDto);
-
-        return ResponseEntity.ok(clientDto);
+        return ResponseEntity.ok(clientService.saveClient(clientDto));
     }
 
     // PUT /clients/{id} -> Mettre à jour un client
@@ -59,21 +56,12 @@ public class ClientControllerV2 {
             @PathVariable Integer id,
             @RequestBody @Valid ClientDto clientDto) throws ClientNotFoundException {
 
-        clientDto.setId(id);
-
-        ClientDto clientDtoForUpdate = ClientInMemoryDao.clients.stream()
-                .filter(c -> c.getId().equals(id)).findFirst().orElse(null);
+        ClientDto clientDtoForUpdate = clientService.updateClient(id, clientDto);
 
         if(clientDtoForUpdate == null) {
             throw new ClientNotFoundException("idClient : " + id);
             //return ResponseEntity.notFound().build();
         }
-
-        clientDtoForUpdate.setAddress(clientDto.getAddress());
-        clientDtoForUpdate.setEmail(clientDto.getEmail());
-        clientDtoForUpdate.setName(clientDto.getName());
-        clientDtoForUpdate.setPhone(clientDto.getPhone());
-        clientDtoForUpdate.setPassword(clientDto.getPassword());
 
         return ResponseEntity.ok(clientDtoForUpdate);
     }
@@ -82,33 +70,23 @@ public class ClientControllerV2 {
     // DELETE /clients/{id} -> Supprimer le client id
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removeClientById(@PathVariable Integer id) {
-
-        boolean isRemoved = ClientInMemoryDao.clients.removeIf(c -> c.getId().equals(id));
-
-        if(!isRemoved) {
-            return ResponseEntity.notFound().build();
-        }
+        clientService.deleteClientById(id);
 
         return ResponseEntity.noContent().build();
     }
 
     // GET /clients/{id}/factures -> récupérer les factures du client id
     @GetMapping("/{id}/factures")
-    public ResponseEntity<List<FactureDto>> getAllFacturesByIDclient(@PathVariable Integer id) {
-        return ResponseEntity.ok(FactureInMemoryDao.factures.stream()
-                .filter(f -> f.getIdClient().equals(id))
-                .collect(Collectors.toList()));
+    public ResponseEntity<List<FactureDto>> getAllFacturesByIdClient(@PathVariable Integer id) {
+        return ResponseEntity.ok(clientService.findClientById(id).getFactures());
     }
 
     // GET /clients/{id}/factures/{idFacture} -> récupérer la factures de l'idFacture du client id
     @GetMapping("/{id}/factures/{idFacture}")
-    public ResponseEntity<FactureDto> geFactureByIDclientAndByIdFacture(
+    public ResponseEntity<FactureDto> geFactureByIdClientAndByIdFacture(
             @PathVariable Integer id,
             @PathVariable Integer idFacture
     ) {
-        return FactureInMemoryDao.factures.stream()
-                .filter(c -> c.getIdClient().equals(id) && c.getId().equals(idFacture))
-                .map(ResponseEntity::ok)
-                .findFirst().orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(factureService.findFactureByIdAndIdClient(idFacture, id));
     }
 }

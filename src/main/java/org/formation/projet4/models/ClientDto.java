@@ -7,6 +7,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,4 +32,7 @@ public class ClientDto {
     private String phone;
     @NotBlank
     private String address;
+
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch =  FetchType.LAZY)
+    private List<FactureDto> factures = new ArrayList<>();
 }
