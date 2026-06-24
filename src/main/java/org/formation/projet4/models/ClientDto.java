@@ -26,7 +26,6 @@ public class ClientDto {
     private String email;
     @NotBlank
     @Size(min = 8)
-    @JsonIgnore
     private String password;
     @NotBlank
     private String phone;
