@@ -77,11 +77,16 @@ class ClientControllerV2WithoutDatabaseTest {
     void shouldCreateClient() throws Exception {
 
         ClientDto client = new ClientDto();
+        client.setId(2);
         client.setName("Martin");
         client.setEmail("martin@test.fr");
         client.setPassword("1234146165165161");
         client.setPhone("0102030405");
         client.setAddress("Paris");
+
+        lenient()
+                .when(clientService.saveClient(client))
+                .thenReturn(client);
 
         mockMvc.perform(
                         post("/api/v2/clients")
@@ -95,6 +100,8 @@ class ClientControllerV2WithoutDatabaseTest {
 
     @Test
     void shouldDeleteClient() throws Exception {
+        lenient()
+                .doNothing().when(clientService).deleteClientById(any());
 
         mockMvc.perform(delete("/api/v2/clients/1"))
                 .andExpect(status().isNoContent());
@@ -109,6 +116,10 @@ class ClientControllerV2WithoutDatabaseTest {
         updated.setAddress("Lyon");
         updated.setPhone("0600000000");
         updated.setPassword("secretsdqsdqsdq");
+
+        lenient()
+                .when(clientService.updateClient(any(), updated))
+                .thenReturn(updated);
 
         mockMvc.perform(
                         put("/api/v2/clients/1")
